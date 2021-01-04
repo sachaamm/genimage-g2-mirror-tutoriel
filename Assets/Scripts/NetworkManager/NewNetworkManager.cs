@@ -195,7 +195,7 @@ public class NewNetworkManager : NetworkManager
 
         conn.Send(characterMessage);
 
-        // NetworkServer.AddPlayerForConnection(conn, newPlayer);
+        
     }
 
     void OnCreateCharacter(NetworkConnection conn, CreateMMOCharacterMessage message)
