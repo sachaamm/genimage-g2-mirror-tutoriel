@@ -30,9 +30,6 @@ namespace Player
         void Update()
         {
 
-            Debug.Log(ClientScene.localPlayer);
-            Debug.Log(ClientScene.localPlayer.gameObject == this.gameObject);
-
             // 
             if (ClientScene.localPlayer.gameObject == this.gameObject)
             {

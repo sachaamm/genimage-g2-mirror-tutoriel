@@ -309,7 +309,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c3576336671d344e8aee013e48a052f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camDistanceToLocalPlayer: 10
+  camDistanceToLocalPlayerBackWard: 8
+  camDistanceToLocalPlayerUp: 5
 --- !u!1 &1274737578
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,7 +391,7 @@ MonoBehaviour:
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 4435224074820271280, guid: d36cda942644e35448f0aa6262830e48,
+  playerPrefab: {fileID: 2225101640092721338, guid: beed770fde0607e47a0e43ca742b33f5,
     type: 3}
   autoCreatePlayer: 0
   playerSpawnMethod: 0
@@ -403,7 +404,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1274737578}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.08, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

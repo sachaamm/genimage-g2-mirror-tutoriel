@@ -9,7 +9,9 @@ public class AssignCameraOnLocalPlayer : MonoBehaviour
 {
     private bool assigned = false;
 
-    public float camDistanceToLocalPlayer = 10;
+    public float camDistanceToLocalPlayerBackWard = 10;
+    public float camDistanceToLocalPlayerUp = 10;
+    
 
     void Start()
     {
@@ -28,7 +30,9 @@ public class AssignCameraOnLocalPlayer : MonoBehaviour
             assigned = true;
 
             Transform localPlayer = ClientScene.localPlayer.transform;
-            transform.position = localPlayer.position + -localPlayer.forward * camDistanceToLocalPlayer;
+            transform.position = localPlayer.position + 
+                                 - localPlayer.forward * camDistanceToLocalPlayerBackWard
+                                 + localPlayer.up * camDistanceToLocalPlayerUp;
             transform.parent = localPlayer.transform;
         }
         
