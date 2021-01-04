@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using System;
+using Mirror;
 using UnityEngine;
 
 namespace Player
@@ -16,15 +17,17 @@ namespace Player
 
         protected float moveSpeed = 1.0f;
         protected float rotateSpeed = 1.0f;
+        
+        
 
         // Start is called before the first frame update
         void Start()
         {
-
+            
         }
 
       
-        void FixedUpdate()
+        void Update()
         {
 
             Debug.Log(ClientScene.localPlayer);
@@ -90,6 +93,13 @@ namespace Player
 
         public void Controls()
         {
+            
+            double now = NetworkTime.time;
+
+            int i1 = Convert.ToInt32(now);
+
+            
+            
             if (Input.GetKey(KeyCode.LeftArrow))
             {
                 CmdMove((byte) Direction.Left);
