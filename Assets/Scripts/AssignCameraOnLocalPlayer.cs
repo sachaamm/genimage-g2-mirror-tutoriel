@@ -26,7 +26,7 @@ public class AssignCameraOnLocalPlayer : MonoBehaviour
         // Si on a un Local Player
         if (ClientScene.localPlayer)
         {
-            // on assigne la caméra à ce joueur UNE SEULE FOIS SEULEMENT
+            // on assigne la caméra à ce joueur UNE SEULE FOIS SEULEMENT 
             assigned = true;
 
             Transform localPlayer = ClientScene.localPlayer.transform;
@@ -35,7 +35,6 @@ public class AssignCameraOnLocalPlayer : MonoBehaviour
                                  + localPlayer.up * camDistanceToLocalPlayerUp;
             transform.parent = localPlayer.transform;
         }
-        
         
     }
 }
