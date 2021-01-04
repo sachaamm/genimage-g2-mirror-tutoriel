@@ -7,6 +7,7 @@ public class Tank : NetworkBehaviour
 {
     public int DamagesDealed = 10;
     public int hp = 100;
+    public TextMesh textLife;
 
     void Start()
     {
@@ -15,7 +16,7 @@ public class Tank : NetworkBehaviour
 
     void Update()
     {
-        
+        textLife.text = hp.ToString();
     }
 
     private void OnTriggerEnter(Collider other)
