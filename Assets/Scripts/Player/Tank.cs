@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class Tank : MonoBehaviour
+public class Tank : NetworkBehaviour
 {
     public int DamagesDealed = 10;
     public int hp = 100;
@@ -17,18 +18,29 @@ public class Tank : MonoBehaviour
         
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Bullet"))
+        if (other.gameObject.CompareTag("Bullet"))
         {
-            GameObject HitedPlayer = collision.gameObject;
-            
-            hp -= DamagesDealed;
-            Destroy(collision.gameObject);
+            GameObject HitedPlayer = other.gameObject;
+
+            CmdOnBeingHit();
+
+            Destroy(other.gameObject);
         }
     }
-    void OnBeingHit()
-    {
 
+    [Command]
+    void CmdOnBeingHit()
+    {
+        hp -= DamagesDealed;
+
+        RpcOnBeingHit();
+    }
+
+    [ClientRpc]
+    void RpcOnBeingHit()
+    {
+        // TODO : mettre à jour l'UI de la vie du tank si il s'agit du tank du local player
     }
 }
