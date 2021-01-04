@@ -6,6 +6,7 @@ using Mirror;
 public class Tank : NetworkBehaviour
 {
     public int DamagesDealed = 10;
+    [SyncVar]
     public int hp = 100;
     public TextMesh textLife;
 
