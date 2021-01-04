@@ -4,15 +4,31 @@ using UnityEngine;
 
 public class Tank : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public int DamagesDealed = 10;
+    public int hp = 100;
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Bullet"))
+        {
+            GameObject HitedPlayer = collision.gameObject;
+            
+            hp -= DamagesDealed;
+            Destroy(collision.gameObject);
+        }
+    }
+    void OnBeingHit()
+    {
+
     }
 }
