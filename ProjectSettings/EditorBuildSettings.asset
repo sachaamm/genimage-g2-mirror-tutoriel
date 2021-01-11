@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Examples/ChangeColorGlobally.unity
-    guid: d5559e75dd6c80c4ebc96c7ab7655760
+    path: Assets/Scenes/UiSyncListScene.unity
+    guid: 1b427332703dc0f45aeb88de444de17a
   m_configObjects: {}

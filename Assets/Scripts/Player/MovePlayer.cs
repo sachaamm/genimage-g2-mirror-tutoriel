@@ -5,7 +5,7 @@ public class MovePlayer : NetworkMovableWithTranslate
 {
     private void Awake()
     {
-        moveSpeed = 0.5f;
+        moveSpeed = 5f;
         rotateSpeed = 50;
     }
 }

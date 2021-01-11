@@ -24,35 +24,88 @@ namespace Player
         [SyncVar]
         private Vector3 rotation;
         
-        
-        
+        [SyncVar(hook = nameof(OnLeftKeyChanged))] private bool leftKey;
+        [SyncVar] private bool rightKey;
+        [SyncVar] private bool upKey;
+        [SyncVar] private bool downKey;
 
+        private bool leftKeyClient;
+        
+        
+        
         // Start is called before the first frame update
         void Start()
         {
             position = transform.position;
             rotation = transform.rotation.eulerAngles;
         }
-
-
+        
         private void Update()
         {
             
-            // Controls();
-            
-            // transform.position = position;
-            // transform.rotation = Quaternion.Euler(rotation);
-        }
-
-        void FixedUpdate()
-        {
-
-            // 
             if (ClientScene.localPlayer.gameObject == this.gameObject)
             {
                 Controls();
             }
+
+            if (isServer)
+            {
+                MoveFromInput();
+            }
+
+            if (isClient)
+            {
+                transform.position = position;
+                transform.rotation = Quaternion.Euler(rotation);
+            }
+
         }
+
+        // Coté client à jour
+        void OnLeftKeyChanged(bool prevLeftKeyState, bool newLeftKeyState)
+        {
+            Debug.Log("Switch left key state from " + prevLeftKeyState + " to " + newLeftKeyState );
+        }
+
+        [Server]
+        void MoveFromInput()
+        {
+            if (leftKey)
+            {
+                transform.Rotate(-new Vector3(0,1,0) * Time.deltaTime * (rotateSpeed));
+            }
+            
+            if (rightKey)
+            {
+                transform.Rotate(new Vector3(0,1,0) * Time.deltaTime * (rotateSpeed));
+            }
+
+            if (upKey)
+            {
+                transform.Translate(new Vector3(0,0,1) * Time.deltaTime * (moveSpeed));
+            }
+            
+            if (downKey)
+            {
+                transform.Translate(new Vector3(0,0,-1) * Time.deltaTime * (moveSpeed));
+            }
+
+            position = transform.position;
+            rotation = transform.rotation.eulerAngles;
+
+
+        }
+
+        
+        
+        
+        // Appellé par le serveur
+        [ClientRpc]
+        void RpcMove()
+        {
+            
+        }
+
 
         // fonction Executée coté serveur
         [Command]
@@ -85,80 +138,153 @@ namespace Player
             }
         }
 
-        // fonction Executée sur tous les joueurs correspondants des clients 
-        // [ClientRpc]
-        // void RpcMove(Vector3 v)
-        // {
-        //     transform.Translate(v);
-        // }
-        //
-        // [ClientRpc]
-        // void RpcRotate(byte directionByte)
-        // {
-        //     Direction direction = (Direction)directionByte;
-        //     
-        //     if (direction == Direction.Left)
-        //     {
-        //         transform.Rotate(-new Vector3(0,1,0) * Time.deltaTime * (rotateSpeed));
-        //     }
-        //
-        //     if (direction == Direction.Right)
-        //     {
-        //         transform.Rotate(new Vector3(0,1,0) * Time.deltaTime * (rotateSpeed));
-        //     }
-        //
-        // }
         
-        
-
         public void Controls()
         {
             
-            double now = NetworkTime.time;
-
-            int i1 = Convert.ToInt32(now);
-
+            //
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                CmdOnPressKey((byte) Direction.Left);
+            }
+            
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                CmdOnPressKey((byte) Direction.Right);
+            }
+            
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                CmdOnPressKey((byte) Direction.Up);
+            }
+            
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                CmdOnPressKey((byte) Direction.Down);
+            }
+            
+            //
+            if (Input.GetKeyUp(KeyCode.LeftArrow))
+            {
+                CmdOnReleaseKey((byte) Direction.Left);
+            }
+            
+            if (Input.GetKeyUp(KeyCode.RightArrow))
+            {
+                CmdOnReleaseKey((byte) Direction.Right);
+            }
+            
+            if (Input.GetKeyUp(KeyCode.UpArrow))
+            {
+                CmdOnReleaseKey((byte) Direction.Up);
+            }
+            
+            if (Input.GetKeyUp(KeyCode.DownArrow))
+            {
+                CmdOnReleaseKey((byte) Direction.Down);
+            }
             
             // if (Input.GetKey(KeyCode.LeftArrow))
             // {
-            //     CmdMove((byte) Direction.Left);
+            //     RotateInServer(Direction.Left);
             // }
             //
             // if (Input.GetKey(KeyCode.RightArrow))
             // {
-            //     CmdMove((byte) Direction.Right);
+            //     RotateInServer(Direction.Right);
             // }
             //
             // if (Input.GetKey(KeyCode.UpArrow))
             // {
-            //     CmdMove((byte) Direction.Up);
+            //     MoveInServer(Direction.Up);
             // }
             //
             // if (Input.GetKey(KeyCode.DownArrow))
             // {
-            //     CmdMove((byte) Direction.Down);
+            //     MoveInServer(Direction.Down);
             // }
+        }
+
+        [Command]
+        void CmdOnPressKey(byte directionByte)
+        {
+            Direction direction = (Direction)directionByte;
+
+            if (direction == Direction.Up)
+            {
+                upKey = true;
+            }
             
-            if (Input.GetKey(KeyCode.LeftArrow))
+            if (direction == Direction.Down)
+            {
+                downKey = true;
+            }
+            
+            if (direction == Direction.Left)
+            {
+                leftKey = true;
+            }
+            
+            if (direction == Direction.Right)
+            {
+                rightKey = true;
+            }
+            
+        }
+
+        [Command]
+        void CmdOnReleaseKey(byte directionByte)
+        {
+            Direction direction = (Direction)directionByte;
+            
+            if (direction == Direction.Up)
+            {
+                upKey = false;
+            }
+            
+            if (direction == Direction.Down)
+            {
+                downKey = false;
+            }
+            
+            if (direction == Direction.Left)
+            {
+                leftKey = false;
+            }
+            
+            if (direction == Direction.Right)
+            {
+                rightKey = false;
+            }
+        }
+        
+
+        [Server]
+        void RotateInServer(Direction direction)
+        {
+            if (direction == Direction.Left)
             {
                 transform.Rotate(-new Vector3(0,1,0) * Time.deltaTime * (rotateSpeed));
             }
 
-            if (Input.GetKey(KeyCode.RightArrow))
+            if (direction == Direction.Right)
             {
                 transform.Rotate(new Vector3(0,1,0) * Time.deltaTime * (rotateSpeed));
             }
             
-            if (Input.GetKey(KeyCode.UpArrow))
+        }
+        
+        [Server]
+        void MoveInServer(Direction direction)
+        {
+            if (direction == Direction.Up)
             {
                 transform.Translate(new Vector3(0,0,1) * (moveSpeed));
-                // CmdMove((byte) Direction.Up);
             }
-
-            if (Input.GetKey(KeyCode.DownArrow))
+            
+            if (direction == Direction.Down)
             {
                 transform.Translate(new Vector3(0,0,-1) * (moveSpeed));
-                // CmdMove((byte) Direction.Down);
             }
         }
 

@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 namespace Interactable
 {
     
-    public class InteractWithSceneObject : MonoBehaviour
+    public class InteractWithSceneObject : NetworkBehaviour
     {
         private float timeToChangeId = 2;
         private float counter = 0;
@@ -23,11 +24,15 @@ namespace Interactable
         
             if (counter > timeToChangeId)
             {
-                // SceneObjectWitoutAuthority.Singleton.RpcDefineId();
-                SceneObjectWitoutAuthority.Singleton.SetNewIdInSyncList();
+                if (isServer)
+                {
+                    SceneObjectWitoutAuthority.Singleton.ServerSetNewId();
+                }
+                // SceneObjectWitoutAuthority.Singleton.SetNewIdInSyncList();
                 counter = 0;
             }
         }
+        
     }
 
 }

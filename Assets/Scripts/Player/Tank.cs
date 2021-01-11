@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Mirror;
 
 public class Tank : NetworkBehaviour
@@ -26,7 +24,7 @@ public class Tank : NetworkBehaviour
         {
             GameObject HitedPlayer = other.gameObject;
 
-            CmdOnBeingHit();
+            if(hasAuthority) CmdOnBeingHit();
 
             Destroy(other.gameObject);
         }

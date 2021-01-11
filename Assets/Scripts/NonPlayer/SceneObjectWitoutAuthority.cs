@@ -10,27 +10,18 @@ namespace Interactable
 
         public TextMesh textMesh;
 
-        private readonly SyncList<int> ids = new SyncList<int>();
+        // private readonly SyncList<int> ids = new SyncList<int>();
 
         public static SceneObjectWitoutAuthority Singleton;
         private void Awake()
         {
             Singleton = this;
-            
-            ids.Add(RandomInt());
-            
+            // ids.Add(RandomInt());
         }
-
-        // Start is called before the first frame update
-        void Start()
-        {
-            
-        }
-
-        // Update is called once per frame
+        
         void Update()
         {
-            textMesh.text = ids[0].ToString();
+            textMesh.text = id.ToString();
         }
 
         [ClientRpc]
@@ -40,10 +31,18 @@ namespace Interactable
         }
 
         [Server]
+        public void ServerSetNewId()
+        {
+            id = RandomInt();
+        }
+
+        [Server]
         public void SetNewIdInSyncList()
         {
-            ids[0] = RandomInt();
+            // ids[0] = RandomInt();
         }
+        
+        
 
         int RandomInt()
         {
