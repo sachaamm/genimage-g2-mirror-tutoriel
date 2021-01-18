@@ -24,16 +24,13 @@ namespace Player
         [SyncVar]
         private Vector3 rotation;
         
-        [SyncVar(hook = nameof(OnLeftKeyChanged))] private bool leftKey;
+        [SyncVar] private bool leftKey;
         [SyncVar] private bool rightKey;
         [SyncVar] private bool upKey;
         [SyncVar] private bool downKey;
 
         private bool leftKeyClient;
         
-        
-        
-        // Start is called before the first frame update
         void Start()
         {
             position = transform.position;
@@ -61,11 +58,7 @@ namespace Player
 
         }
 
-        // Coté client à jour
-        void OnLeftKeyChanged(bool prevLeftKeyState, bool newLeftKeyState)
-        {
-            Debug.Log("Switch left key state from " + prevLeftKeyState + " to " + newLeftKeyState );
-        }
+     
 
         [Server]
         void MoveFromInput()

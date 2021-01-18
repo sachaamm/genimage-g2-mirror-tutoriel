@@ -8,6 +8,7 @@ public class Tank : NetworkBehaviour
     public int hp = 100;
     public TextMesh textLife;
 
+    public GameObject vfxFire;
     void Start()
     {
         
@@ -30,11 +31,22 @@ public class Tank : NetworkBehaviour
         }
     }
 
+    public bool IsAlive()
+    {
+        return hp > 0;
+    }
+
     [Command]
     void CmdOnBeingHit()
     {
         hp -= DamagesDealed;
-
+        
+        if (hp <= 0)
+        {
+            GameObject flame = Instantiate(vfxFire, transform.position, Quaternion.identity);
+            NetworkServer.Spawn(flame);
+        }
+        
         RpcOnBeingHit();
     }
 
@@ -42,5 +54,7 @@ public class Tank : NetworkBehaviour
     void RpcOnBeingHit()
     {
         // TODO : mettre à jour l'UI de la vie du tank si il s'agit du tank du local player
+
+        
     }
 }

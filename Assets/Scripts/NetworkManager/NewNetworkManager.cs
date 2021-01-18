@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
+using Utility;
 
 /*
 	Documentation: https://mirror-networking.com/docs/Components/NetworkManager.html
@@ -185,30 +187,53 @@ public class NewNetworkManager : NetworkManager
         base.OnClientConnect(conn);
 
         // you can send the message here, or wherever else you want
-        CreateMMOCharacterMessage characterMessage = new CreateMMOCharacterMessage
+        CreateTankMessage tankMessage = new CreateTankMessage
         {
-
-            name = "Joe Gaba Gaba",
-            hairColor = Color.red,
-            eyeColor = Color.green
+            name = "MyTank",
+            tankColor = Color.red,
+            tankModel = TankModel.T90
         };
 
-        conn.Send(characterMessage);
-
+        conn.Send(tankMessage);
         
     }
 
-    void OnCreateCharacter(NetworkConnection conn, CreateMMOCharacterMessage message)
+    void OnCreateTank(NetworkConnection conn, CreateTankMessage message)
     {
         // playerPrefab is the one assigned in the inspector in Network
         // Manager but you can use different prefabs per race for example
-        GameObject newPlayer = Instantiate(playerPrefab);
-        
-        // Apply data from the message however appropriate for your game
-        // Typically Player would be a component you write with syncvars or properties
 
-        // call this to use this gameobject as the primary controller
-        NetworkServer.AddPlayerForConnection(conn, newPlayer);
+        
+        // Avoir une liste des spawnPoint available
+        List<GameObject> spawnPointsAvailable = new List<GameObject>();
+        GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        
+        foreach (GameObject spawnPoint in spawnPoints)
+        {
+            if (SpawnUtility.SpawnPointAvailable(spawnPoint, players, 10))
+            {
+                spawnPointsAvailable.Add(spawnPoint);
+            }
+        }
+
+        // Je spawne le player si il reste des spawn Points available
+        if (spawnPointsAvailable.Count > 0)
+        {
+            GameObject selectedSpawnPoint = spawnPointsAvailable[Random.Range(0,spawnPointsAvailable.Count)];
+        
+            GameObject newPlayer = 
+                Instantiate(playerPrefab, selectedSpawnPoint.transform.position, Quaternion.identity);
+
+            // Apply data from the message however appropriate for your game
+            // Typically Player would be a component you write with syncvars or properties
+
+            // call this to use this gameobject as the primary controller
+            NetworkServer.AddPlayerForConnection(conn, newPlayer);
+
+        }
+        
+        
     }
 
     /// <summary>
@@ -256,7 +281,7 @@ public class NewNetworkManager : NetworkManager
     public override void OnStartServer()
     {
         base.OnStartServer();
-        NetworkServer.RegisterHandler<CreateMMOCharacterMessage>(OnCreateCharacter);
+        NetworkServer.RegisterHandler<CreateTankMessage>(OnCreateTank);
 
     }
 
@@ -286,18 +311,15 @@ public class NewNetworkManager : NetworkManager
     #endregion
 }
 
-public struct CreateMMOCharacterMessage : NetworkMessage
+public struct CreateTankMessage : NetworkMessage
 {
-    public Race race;
+    public TankModel tankModel;
     public string name;
-    public Color hairColor;
-    public Color eyeColor;
+    public Color tankColor;
 }
 
-public enum Race
+public enum TankModel
 {
-    None,
-    Elvish,
-    Dwarvish,
-    Human
+    T10,
+    T90,
 }
