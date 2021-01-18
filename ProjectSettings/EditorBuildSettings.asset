@@ -6,12 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Tank/Intro.unity
-    guid: 27e999d0e62dd474b8dddfeda04f9d49
-  - enabled: 1
-    path: Assets/Scenes/Tank/Game.unity
-    guid: 21231940cebf73445ab38f6132b9db39
-  - enabled: 1
-    path: Assets/Scenes/Tank/Offline.unity
-    guid: ed6499e9d4ab65e43b552e32c49e6936
+    path: Assets/Scenes/Examples/ChangeSyncVarWithoutAuthority.unity
+    guid: e20fb74db53a1e04e95f3ba4d0417edb
   m_configObjects: {}
