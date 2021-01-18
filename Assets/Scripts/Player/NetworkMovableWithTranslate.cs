@@ -43,7 +43,7 @@ namespace Player
         private void Update()
         {
             
-            if (ClientScene.localPlayer.gameObject == this.gameObject)
+            if (ClientScene.localPlayer && ClientScene.localPlayer.gameObject == this.gameObject)
             {
                 Controls();
             }
